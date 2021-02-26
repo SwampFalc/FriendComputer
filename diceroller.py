@@ -22,7 +22,7 @@ class DiceRoller(commands.Cog):
 
         rolls = [random.randint(1, size) for _ in range(count)]
 
-        await ctx.send(f"{'+'.join(str(roll) for roll in rolls)} = {sum(rolls)}")
+        await ctx.send(f"@{ctx.author} {'+'.join(str(roll) for roll in rolls)} = {sum(rolls)}")
     
     @commands.command()
     async def r(self, ctx, *args):
