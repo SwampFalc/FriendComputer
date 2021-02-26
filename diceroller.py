@@ -8,7 +8,21 @@ class DiceRoller(commands.Cog):
 
     @commands.command()
     async def roll(self, ctx, *args):
-        await ctx.send('{} arguments: {}'.format(len(args), ', '.join(args)))
+        """
+        v1: xdy
+        """
+        command = args[0]
+        comments = args[1:]
+
+        try:
+            count, size = map(int, command.split('d'))
+        except Exception:
+            await ctx.send('Format has to be in NdN!')
+            return
+
+        rolls = [random.randint(1, size) for _ in range(count)]
+
+        await ctx.send(f"{'+'.join(rolls)} = {sum(rolls)}")
     
     @commands.command()
     async def r(self, ctx, *args):
