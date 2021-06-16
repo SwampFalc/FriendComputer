@@ -21,8 +21,9 @@ class DogsGame(commands.Cog):
         arguments = args[1:]
 
         if command == "add":
+            dice = arguments.pop(0)
             try:
-                count, size = map(int, command.split('d'))
+                count, size = map(int, dice.split('d'))
             except Exception:
                 await ctx.send('Usage: /dogs add NdN')
                 return
