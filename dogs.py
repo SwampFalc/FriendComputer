@@ -16,6 +16,7 @@ class Game:
     def load(self):
         with open(FILENAME) as f:
             self.players = json.load(f)
+    
 
 class DogsGame(commands.Cog):
     def __init__(self, bot):
@@ -41,12 +42,14 @@ class DogsGame(commands.Cog):
 
             rolls = [str(random.randint(1, size)) for _ in range(count)]
 
-            if ctx.author not in self.game.players:
-                self.game.players[ctx.author] = rolls
+            if player not in self.game.players:
+                self.game.players[player] = rolls
             else:
-                self.game.players[ctx.author].append(rolls)
+                self.game.players[player].append(rolls)
 
-            await ctx.send(f"@{ctx.author} {' '.join(self.game.players[ctx.author])}")
+            self.game.save()
+            for player, numbers in self.game.players.items():
+                await ctx.send(f"{player}: {' '.join(numbers)}")
     
     @commands.command()
     async def d(self, ctx, *args):
