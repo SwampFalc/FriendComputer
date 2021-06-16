@@ -18,7 +18,7 @@ class DogsGame(commands.Cog):
         """
         """
         command = args[0]
-        arguments = args[1:]
+        arguments = list(args[1:])
 
         if command == "add":
             dice = arguments.pop(0)
