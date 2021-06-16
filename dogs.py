@@ -5,6 +5,22 @@ from discord.ext import commands
 
 FILENAME = "dogs.json"
 
+DIGITS = {
+    "1": "①",
+    "2": "②",
+    "3": "③",
+    "4": "④",
+    "5": "⑤",
+    "6": "⑥",
+    "7": "⑦",
+    "8": "⑧",
+    "9": "⑨",
+    "10": "⑩",
+    "11": "⑪",
+    "12": "⑫",
+}
+ 	 	 	 	 	 	 	 	 	 	 
+
 class Game:
     def __init__(self):
         self.players = {}
@@ -17,9 +33,6 @@ class Game:
         with open(FILENAME) as f:
             self.players = json.load(f)
     
-    def clear(self, player):
-        self.players[player] = []
-
 class DogsGame(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -34,8 +47,8 @@ class DogsGame(commands.Cog):
         command = args[0]
         arguments = list(args[1:])
 
-        if command == "clear":
-            self.game.clear(player)
+        if command == "new":
+            self.game = Game()
 
         if command == "add":
             dice = arguments.pop(0)
@@ -46,6 +59,7 @@ class DogsGame(commands.Cog):
                 return
 
             rolls = [str(random.randint(1, size)) for _ in range(count)]
+            await ctx.send(f"{player} rolled {' '.join(rolls)}")
 
             if player not in self.game.players:
                 self.game.players[player] = rolls
@@ -54,7 +68,8 @@ class DogsGame(commands.Cog):
 
         self.game.save()
         for player, numbers in self.game.players.items():
-            await ctx.send(f"{player}: {' '.join(numbers)}")
+            digits = [DIGITS[num] for num in sorted(numbers)]
+            await ctx.send(f"{player}: {' '.join(digits)}")
     
     @commands.command()
     async def d(self, ctx, *args):
