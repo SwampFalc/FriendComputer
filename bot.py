@@ -18,5 +18,5 @@ bot = commands.Bot(command_prefix='/')
 async def on_ready():
     logging.info(f"{bot.user} has connected to Discord!")
 
-bot.add_cog(dogs.DiceRoller(bot))
+bot.add_cog(dogs.DogsGame(bot))
 bot.run(TOKEN)
