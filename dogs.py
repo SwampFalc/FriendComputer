@@ -34,7 +34,7 @@ class DogsGame(commands.Cog):
             else:
                 self.game.players[ctx.author].append(rolls)
 
-            await ctx.send(f"@{ctx.author} {' '.join(self.game.players[ctx.author]}")
+            await ctx.send(f"@{ctx.author} {' '.join(self.game.players[ctx.author])}")
     
     @commands.command()
     async def d(self, ctx, *args):
