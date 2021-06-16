@@ -1,22 +1,33 @@
+import json
 import random
 
 from discord.ext import commands
 
-FILENAME = "dogs.txt"
+FILENAME = "dogs.json"
 
 class Game:
     def __init__(self):
         self.players = {}
+    
+    def save(self):
+        with open(FILENAME, 'w') as f:
+            json.dump(self.players, f)
+
+    def load(self):
+        with open(FILENAME) as f:
+            self.players = json.load(f)
 
 class DogsGame(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.game = Game()
+        self.game.load()
 
     @commands.command()
     async def dogs(self, ctx, *args):
         """
         """
+        player = ctx.author.display_name
         command = args[0]
         arguments = list(args[1:])
 
