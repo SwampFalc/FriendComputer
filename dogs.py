@@ -5,21 +5,6 @@ from discord.ext import commands
 
 FILENAME = "dogs.json"
 
-DIGITS = {
-    "1": "①",
-    "2": "②",
-    "3": "③",
-    "4": "④",
-    "5": "⑤",
-    "6": "⑥",
-    "7": "⑦",
-    "8": "⑧",
-    "9": "⑨",
-    "10": "⑩",
-    "11": "⑪",
-    "12": "⑫",
-}
- 	 	 	 	 	 	 	 	 	 	 
 
 class Game:
     def __init__(self):
@@ -32,7 +17,8 @@ class Game:
     def load(self):
         with open(FILENAME) as f:
             self.players = json.load(f)
-    
+
+
 class DogsGame(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -43,6 +29,9 @@ class DogsGame(commands.Cog):
     async def dogs(self, ctx, *args):
         """
         """
+        # if args == []:
+        #   print help
+
         player = ctx.author.display_name
         command = args[0]
         arguments = list(args[1:])
@@ -51,25 +40,43 @@ class DogsGame(commands.Cog):
             self.game = Game()
 
         if command == "add":
-            dice = arguments.pop(0)
-            try:
-                count, size = map(int, dice.split('d'))
-            except Exception:
-                await ctx.send('Usage: /dogs add NdN')
+            for dice in arguments:
+                try:
+                    count, size = map(int, dice.split('d'))
+                except Exception:
+                    await ctx.send('Usage: /dogs add NdN (NdN ...)')
+                    return
+
+                rolls = [str(random.randint(1, size)) for _ in range(count)]
+                await ctx.send(f"{player} rolled {dice}: {', '.join(rolls)}")
+
+                if player not in self.game.players:
+                    self.game.players[player] = rolls
+                else:
+                    self.game.players[player].extend(rolls)
+
+        if command == "use":
+            if player not in self.game.players:
+                await ctx.send('You have not joined the game yet')
                 return
 
-            rolls = [str(random.randint(1, size)) for _ in range(count)]
-            await ctx.send(f"{player} rolled {' '.join(rolls)}")
+            for number in arguments:
+                try:
+                    self.game.players[player].remove(number)
+                except ValueError:
+                    await ctx.send(f'You have no {number} available')
 
+        if command == "fix":
             if player not in self.game.players:
-                self.game.players[player] = rolls
-            else:
-                self.game.players[player].extend(rolls)
+                await ctx.send('You have not joined the game yet')
+                return
+
+            for number in arguments:
+                self.game.players[player].append(number)
 
         self.game.save()
         for player, numbers in self.game.players.items():
-            digits = [DIGITS[num] for num in sorted(numbers)]
-            await ctx.send(f"{player}: {' '.join(digits)}")
+            await ctx.send(f"{player}: {' - '.join(sorted(numbers))}")
     
     @commands.command()
     async def d(self, ctx, *args):
