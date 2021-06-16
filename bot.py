@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-import diceroller
+import dogs
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -18,5 +18,5 @@ bot = commands.Bot(command_prefix='/')
 async def on_ready():
     logging.info(f"{bot.user} has connected to Discord!")
 
-bot.add_cog(diceroller.DiceRoller(bot))
+bot.add_cog(dogs.DiceRoller(bot))
 bot.run(TOKEN)
